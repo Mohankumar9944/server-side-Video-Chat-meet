@@ -13,9 +13,26 @@ const app=express();
 
 const PORT = process.env.PORT;
 
+
+const allowedOrigins = [
+  "https://client-side-video-chat-meet.vercel.app",
+  "http://localhost:5173", 
+];
+
 app.use(cors({
-  origin: "https://client-side-video-chat-meet.vercel.app",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed for this origin: " + origin));
+    }
+  },
   credentials: true,
+}));
+
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true
 }));
 
 app.use(express.json());
